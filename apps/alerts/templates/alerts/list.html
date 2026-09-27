@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Price Alerts — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Price Alerts</h1>
+    <a class="btn" href="{% url 'alerts:new' %}">New alert</a>
+</div>
+
+<div class="card">
+    <table>
+        <tr><th>Counter</th><th>Condition</th><th>Status</th><th></th></tr>
+        {% for alert in alerts %}
+        <tr>
+            <td>{{ alert.counter.symbol }}</td>
+            <td>{{ alert.get_direction_display }} {{ alert.target_price }}</td>
+            <td>{% if alert.is_active %}Active{% else %}Triggered {{ alert.triggered_at|date:"Y-m-d" }}{% endif %}</td>
+            <td>
+                <form method="post" action="{% url 'alerts:delete' alert.id %}" style="display:inline">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="muted">No alerts yet.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Remove {{ holding.counter.symbol }} — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Remove {{ holding.counter.symbol }}</h1>
+    <p class="muted">You currently hold {{ holding.quantity }} units.</p>
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            <label for="quantity">Quantity to remove</label><br>
+            <input type="number" id="quantity" name="quantity" min="1" max="{{ holding.quantity }}" value="{{ holding.quantity }}">
+        </p>
+        <button class="btn" type="submit">Remove</button>
+        <a href="{% url 'portfolio:dashboard' %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

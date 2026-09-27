@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Add counter — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Add a counter to your portfolio</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">Add</button>
+    </form>
+</div>
+{% endblock %}

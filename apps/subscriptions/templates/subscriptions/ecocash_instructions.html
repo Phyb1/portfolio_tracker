@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Pay with EcoCash — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Pay with EcoCash</h1>
+    <ol>
+        <li>Send <strong>${{ subscription.amount_usd|default:ecocash_number }}</strong> via EcoCash to
+            <strong>{{ ecocash_number }}</strong> ({{ ecocash_name }}).</li>
+        <li>Quote reference <strong>{{ subscription.reference }}</strong> in the EcoCash note if possible.</li>
+        <li>Tap the button below to send us your payment screenshot on WhatsApp, quoting the same reference.</li>
+    </ol>
+    <a class="btn" href="{{ whatsapp_url }}" target="_blank" rel="noopener">Send screenshot on WhatsApp</a>
+</div>
+
+<div class="card">
+    <h2>Optional: tell us which number you paid from</h2>
+    <p class="muted">This speeds up matching your payment — not required.</p>
+    <form method="post" action="{% url 'subscriptions:confirm_ecocash_sender' subscription.reference %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">Save</button>
+    </form>
+</div>
+
+<p class="muted">Your subscription activates once we confirm the payment — usually within a few hours.</p>
+{% endblock %}

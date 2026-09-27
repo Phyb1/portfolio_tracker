@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Market Activity — {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Latest ZSE and VFEX closing prices, volumes and trade values.{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Market Activity Summary</h1>
+    {% if as_of %}<p class="muted">As of {{ as_of }}</p>{% endif %}
+    <p>
+        <a href="?">All</a> ·
+        <a href="?exchange=ZSE">ZSE</a> ·
+        <a href="?exchange=VFEX">VFEX</a>
+    </p>
+    <table>
+        <tr><th>Symbol</th><th>Exchange</th><th>Close</th><th>Volume traded</th></tr>
+        {% for record in records %}
+        <tr>
+            <td><a href="{% url 'markets:counter_detail' record.counter.exchange.code record.counter.symbol %}">{{ record.counter.symbol }}</a></td>
+            <td>{{ record.counter.exchange.code }}</td>
+            <td>{{ record.closing_price }}</td>
+            <td>{{ record.volume }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="muted">No price data yet — run <code>manage.py fetch_prices</code> or import legacy data.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

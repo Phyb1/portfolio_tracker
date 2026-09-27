@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ counter.symbol }} — {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ counter.name }} ({{ counter.symbol }}) price history and chart on the {{ counter.exchange.name }}.{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>{{ counter.name }} ({{ counter.symbol }})</h1>
+    <p class="muted">{{ counter.exchange.name }} · Status: {{ counter.get_status_display }}</p>
+    {% if counter.moved_to %}
+    <p>This counter moved to <a href="{% url 'markets:counter_detail' counter.moved_to.exchange.code counter.moved_to.symbol %}">{{ counter.moved_to.symbol }} on {{ counter.moved_to.exchange.code }}</a>.</p>
+    {% endif %}
+    {% if latest %}<p>Latest close: <strong>${{ latest.closing_price }}</strong> on {{ latest.date }}</p>{% endif %}
+</div>
+
+<div class="card">
+    <canvas id="priceChart" height="100"></canvas>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.3/chart.umd.min.js"></script>
+<script>
+fetch("{% url 'markets:counter_chart_data' counter.exchange.code counter.symbol %}")
+    .then((r) => r.json())
+    .then((data) => {
+        new Chart(document.getElementById("priceChart"), {
+            type: "line",
+            data: {
+                labels: data.labels,
+                datasets: [{ label: data.symbol, data: data.prices, borderColor: "#c8f04d", tension: 0.2 }],
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: false } } },
+        });
+    });
+</script>
+{% endblock %}

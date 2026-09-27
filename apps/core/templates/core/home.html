@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ SITE_NAME }} — ZSE & VFEX portfolio tracking{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Track your ZSE and VFEX portfolio</h1>
+    <p>{{ SITE_DESCRIPTION }}</p>
+    <p>
+        Enter your counters and quantities, and get weekly gain/loss reports, market
+        activity summaries, price alerts, and growth charts — free for your first
+        30 days.
+    </p>
+    <a class="btn" href="{% url 'accounts:signup' %}">Start free trial</a>
+    <a class="btn" style="background:transparent;color:var(--accent);border:1px solid var(--accent);margin-left:0.5rem;" href="{% url 'markets:summary' %}">View market prices</a>
+</div>
+{% endblock %}

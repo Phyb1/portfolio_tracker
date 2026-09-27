@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Price sheet — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Your Personalized Price Sheet</h1>
+    <p class="muted">As of your holdings' latest available prices.</p>
+    <table>
+        <tr><th>Counter</th><th>Exchange</th><th>Quantity</th><th>Price</th><th>Value</th><th>As of</th></tr>
+        {% for row in sheet %}
+        <tr>
+            <td>{{ row.counter.symbol }}</td>
+            <td>{{ row.counter.exchange.code }}</td>
+            <td>{{ row.quantity }}</td>
+            <td>{% if row.price %}${{ row.price }}{% else %}—{% endif %}</td>
+            <td>{% if row.value %}${{ row.value|floatformat:2 }}{% else %}—{% endif %}</td>
+            <td>{{ row.as_of|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a class="btn" href="?format=pdf">Download as PDF</a></p>
+    <p class="muted">PDF export is on the roadmap — hook this up with the pdf skill/weasyprint when ready.</p>
+</div>
+{% endblock %}

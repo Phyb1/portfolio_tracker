@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+
+{% if profile.is_trial_active %}
+<div class="card">
+    <p class="muted">{{ profile.days_left_in_trial }} day(s) left in your free trial.</p>
+</div>
+{% elif not profile.has_active_subscription %}
+<div class="card">
+    <p>Your trial has ended. <a href="{% url 'subscriptions:plans' %}">Subscribe for ${{ profile.user.subscriptions.first.amount_usd|default:"5" }}/quarter</a> to keep tracking.</p>
+</div>
+{% endif %}
+
+<div class="card">
+    <h1>Your Portfolio</h1>
+    <p>Total value: <strong>${{ total_value|floatformat:2 }}</strong></p>
+    <p>
+        7-day change:
+        <span class="{% if weekly.change >= 0 %}gain{% else %}loss{% endif %}">
+            ${{ weekly.change|floatformat:2 }} ({{ weekly.pct_change|floatformat:2 }}%)
+        </span>
+    </p>
+    <a class="btn" href="{% url 'portfolio:add_holding' %}">Add counter</a>
+</div>
+
+<div class="card">
+    <h2>Holdings</h2>
+    {% if sheet %}
+    <table>
+        <tr><th>Counter</th><th>Exchange</th><th>Quantity</th><th>Price</th><th>Value</th><th></th></tr>
+        {% for row in sheet %}
+        <tr>
+            <td><a href="{% url 'markets:counter_detail' row.counter.exchange.code row.counter.symbol %}">{{ row.counter.symbol }}</a></td>
+            <td>{{ row.counter.exchange.code }}</td>
+            <td>{{ row.quantity }}</td>
+            <td>{% if row.price %}${{ row.price }}{% else %}—{% endif %}</td>
+            <td>{% if row.value %}${{ row.value|floatformat:2 }}{% else %}—{% endif %}</td>
+            <td><a href="{% url 'portfolio:remove_holding' row.holding_id %}">Remove</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="muted">No holdings yet. <a href="{% url 'portfolio:add_holding' %}">Add your first counter</a>.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <a href="{% url 'portfolio:price_sheet' %}">View personalized price sheet</a> ·
+    <a href="{% url 'portfolio:report' %}">Custom date-range report</a> ·
+    <a href="{% url 'alerts:list' %}">Manage price alerts</a>
+</div>
+{% endblock %}

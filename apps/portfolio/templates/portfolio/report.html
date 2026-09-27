@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Gain/Loss report — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Gain/Loss Report</h1>
+    <form method="get">
+        <label>From <input type="date" name="start" value="{{ result.start|date:'Y-m-d' }}"></label>
+        <label>To <input type="date" name="end" value="{{ result.end|date:'Y-m-d' }}"></label>
+        <button class="btn" type="submit">Update</button>
+    </form>
+</div>
+<div class="card">
+    <p>Value on {{ result.start }}: <strong>${{ result.start_value|floatformat:2 }}</strong></p>
+    <p>Value on {{ result.end }}: <strong>${{ result.end_value|floatformat:2 }}</strong></p>
+    <p>
+        Change:
+        <span class="{% if result.change >= 0 %}gain{% else %}loss{% endif %}">
+            ${{ result.change|floatformat:2 }} ({{ result.pct_change|floatformat:2 }}%)
+        </span>
+    </p>
+</div>
+{% endblock %}

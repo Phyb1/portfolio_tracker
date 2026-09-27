@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Subscription — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Subscription</h1>
+    {% if profile.is_trial_active %}
+        <p>You have {{ profile.days_left_in_trial }} day(s) left in your free trial.</p>
+    {% elif profile.has_active_subscription %}
+        <p class="gain">Your subscription is active.</p>
+    {% else %}
+        <p>Your trial has ended. Subscribe to keep tracking your portfolio, setting price alerts, and downloading price sheets.</p>
+    {% endif %}
+    <p><strong>${{ price }} / {{ period_days }} days</strong> — full access to alerts, price sheets, and reports.</p>
+</div>
+
+<div class="card">
+    <h2>Pay via EcoCash</h2>
+    <p class="muted">Send EcoCash, then confirm on WhatsApp — no card needed.</p>
+    <form method="post" action="{% url 'subscriptions:start_ecocash' %}">
+        {% csrf_token %}
+        <button class="btn" type="submit">Pay with EcoCash</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Pay via Paynow</h2>
+    <p class="muted">Card, bank transfer, or mobile money through Paynow.</p>
+    <form method="post" action="{% url 'subscriptions:start_paynow' %}">
+        {% csrf_token %}
+        <button class="btn" type="submit">Pay with Paynow</button>
+    </form>
+</div>
+{% endblock %}
